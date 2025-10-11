@@ -295,11 +295,6 @@ export default function FightDetector({ onBack }: { onBack: () => void }) {
           </button>
         )}
       </div>
-
-      <div className="mt-4 text-gray-400 text-sm">
-        <p><strong>Using:</strong> OpenCV.js Frame Differencing + Thresholding</p>
-        <p><strong>Threshold:</strong> &gt;8% motion pixels for 4 consecutive frames</p>
-      </div>
     </div>
   )
 }
