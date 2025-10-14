@@ -4,15 +4,13 @@ PWA designed to run only on phone
 
 Starts as a normal id card when three times tapped goes to the main dashboard page
 
-where there is a button when pressed it starts the session so it starts to records audio. 
+where there is a button when pressed it starts the session so it starts to records audio, and there would be a button to end the session too and stop recording
 
-once class ended the student can end the session
+once recording stopped itll have a button displayed to send the class transcript with ai summary and noted homework assignments deadlines etc with study questions and more as well
 
-the AI processing pipeline kicks in, using OpenAI Whisper to transcribe the entire lecture, GPT-4 to generate intelligent summaries, 
+with another button all of this will be availble to be seen in another page, that page can be saved in the previous classes where students always have a option to send the mail to their mails (students tho have to enter mail everytime since this is a mvp)
 
-automatically extracting homework assignments and deadlines from the teacher's speech, creating study questions for review, and compiling everything into a beautifully formatted email sent directly to the student. 
-
-The device includes a Smart Photo Notes feature where students can photograph whiteboards, textbooks, or worksheets, and GPT-4 Vision will extract text, explain diagrams and formulas, and integrate these visual notes into the daily summary. 
+then comes the photo feature another button beside session record where students can capture and take pics of whiteboards, textbooks, or worksheets, and AI will extract text, explain diagrams and formulas, and integrate these visual notes into the daily summary. 
 
 For safety monitoring, the system employs multi-modal AI fight detection—analyzing both audio patterns (shouting, distress, aggressive speech) and visual cues (rapid motion, aggressive poses detected via MediaPipe or TensorFlow.js) sending instant alerts when incidents are detected. 
 
