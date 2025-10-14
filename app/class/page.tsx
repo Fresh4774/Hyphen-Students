@@ -30,8 +30,8 @@ export default function ClassPage() {
           </button>
         </div>
 
-        {/* Centered Button */}
-        <div className="flex items-center justify-center py-20">
+        {/* Centered Buttons */}
+        <div className="flex flex-col items-center justify-center py-20 space-y-4">
           <button
             onClick={() => {
               // Add your navigation or action here
@@ -40,6 +40,26 @@ export default function ClassPage() {
             className="w-full px-8 py-6 bg-white text-black rounded-full text-base font-sans tracking-wider hover:bg-zinc-200 transition-colors"
           >
             START CLASS NOTES SESSION
+          </button>
+
+          <button
+            onClick={() => {
+              // Add your navigation or action here
+              console.log('Capture Knowledge');
+            }}
+            className="w-full px-8 py-6 bg-white text-black rounded-full text-base font-sans tracking-wider hover:bg-zinc-200 transition-colors"
+          >
+            CAPTURE KNOWLEDGE
+          </button>
+
+          <button
+            onClick={() => {
+              // Add your navigation or action here
+              console.log('Previous Classes');
+            }}
+            className="w-full px-8 py-6 bg-white text-black rounded-full text-base font-sans tracking-wider hover:bg-zinc-200 transition-colors"
+          >
+            PREVIOUS CLASSES
           </button>
         </div>
       </div>
