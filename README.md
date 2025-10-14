@@ -2,9 +2,11 @@
 
 PWA designed to run only on phone
 
-a student places the phone in the classroom, presses one button to start the session, and the device handles everything automatically. 
+Starts as a normal id card when three times tapped goes to the main dashboard page
 
-During class, it continuously records audio. once class ended the student can end the session
+where there is a button when pressed it starts the session so it starts to records audio. 
+
+once class ended the student can end the session
 
 the AI processing pipeline kicks in, using OpenAI Whisper to transcribe the entire lecture, GPT-4 to generate intelligent summaries, 
 

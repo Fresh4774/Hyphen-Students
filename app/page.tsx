@@ -1,9 +1,40 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function HomePage() {
+  const router = useRouter();
+  const [tapCount, setTapCount] = useState(0);
+  const [lastTapTime, setLastTapTime] = useState(0);
+
+  const handleTap = () => {
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTapTime;
+
+    // Reset tap count if more than 500ms has passed
+    if (timeSinceLastTap > 500) {
+      setTapCount(1);
+    } else {
+      const newTapCount = tapCount + 1;
+      setTapCount(newTapCount);
+
+      // Navigate on third tap
+      if (newTapCount === 3) {
+        router.push('/class');
+        setTapCount(0);
+      }
+    }
+
+    setLastTapTime(now);
+  };
+
   return (
     <div className="min-h-screen overflow-hidden bg-black flex items-center justify-center p-4 font-mono">
-      <div className="w-full max-w-md bg-black  overflow-hidden p-6 space-y-4">
+      <div 
+        className="w-full max-w-md bg-black overflow-hidden p-6 space-y-4 cursor-pointer"
+        onClick={handleTap}
+      >
         {/* School Name */}
         <div className="text-center border-b border-zinc-800 pb-3">
           <h1 className="text-xl font-sans font-light tracking-widest text-white">
