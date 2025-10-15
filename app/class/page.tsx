@@ -1,5 +1,7 @@
 'use client';
 
+import CameraCapture from '@/components/CameraCapture';
+import PhotoNotes from '@/components/PhotoNotes';
 import { useRouter } from 'next/navigation';
 import { useState, useRef } from 'react';
 
@@ -11,6 +13,14 @@ export default function ClassPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [email, setEmail] = useState('');
   const [showEmailInput, setShowEmailInput] = useState(false);
+  
+  // Camera states
+  const [showQuickCamera, setShowQuickCamera] = useState(false);
+  const [capturedImage, setCapturedImage] = useState('');
+  const [imageAnalysis, setImageAnalysis] = useState('');
+  
+  // Photo Notes state
+  const [showPhotoNotes, setShowPhotoNotes] = useState(false);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -53,7 +63,6 @@ export default function ClassPage() {
     setIsProcessing(true);
 
     try {
-      // Transcribe
       const formData = new FormData();
       formData.append('audio', audioBlob, 'recording.webm');
 
@@ -64,7 +73,6 @@ export default function ClassPage() {
       const { transcript } = await transcribeRes.json();
       setTranscript(transcript);
 
-      // Summarize
       const summarizeRes = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -82,6 +90,28 @@ export default function ClassPage() {
     }
   };
 
+  const handleQuickCapture = async (imageData: string) => {
+    setShowQuickCamera(false);
+    setCapturedImage(imageData);
+    setIsProcessing(true);
+
+    try {
+      const response = await fetch('/api/analyze-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData, type: 'quick' }),
+      });
+      const { analysis } = await response.json();
+      setImageAnalysis(analysis);
+      setShowEmailInput(true);
+    } catch (error) {
+      console.error('Analysis error:', error);
+      alert('Analysis failed');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const sendEmail = async () => {
     if (!email) {
       alert('Please enter email');
@@ -89,10 +119,13 @@ export default function ClassPage() {
     }
 
     try {
+      const content = transcript || imageAnalysis;
+      const summaryContent = summary || 'Quick Capture Summary';
+      
       await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, transcript, summary }),
+        body: JSON.stringify({ email, transcript: content, summary: summaryContent }),
       });
       alert('Email sent successfully!');
       setEmail('');
@@ -101,6 +134,14 @@ export default function ClassPage() {
       alert('Email send failed');
     }
   };
+
+  if (showQuickCamera) {
+    return <CameraCapture onCapture={handleQuickCapture} onClose={() => setShowQuickCamera(false)} />;
+  }
+
+  if (showPhotoNotes) {
+    return <PhotoNotes onClose={() => setShowPhotoNotes(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 font-mono">
@@ -116,7 +157,7 @@ export default function ClassPage() {
           </button>
         </div>
 
-        {!transcript && !isProcessing && (
+        {!transcript && !capturedImage && !isProcessing && (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
             <button
               onClick={isRecording ? stopRecording : startRecording}
@@ -130,17 +171,17 @@ export default function ClassPage() {
             </button>
 
             <button
-              onClick={() => console.log('Capture Knowledge')}
+              onClick={() => setShowQuickCamera(true)}
               className="w-full px-8 py-6 bg-white text-black rounded-full text-base font-sans tracking-wider hover:bg-zinc-200 transition-colors"
             >
               CAPTURE KNOWLEDGE
             </button>
 
             <button
-              onClick={() => console.log('Previous Classes')}
+              onClick={() => setShowPhotoNotes(true)}
               className="w-full px-8 py-6 bg-white text-black rounded-full text-base font-sans tracking-wider hover:bg-zinc-200 transition-colors"
             >
-              PREVIOUS CLASSES
+              PHOTO NOTES
             </button>
           </div>
         )}
@@ -161,6 +202,37 @@ export default function ClassPage() {
             <div className="border border-zinc-800 p-4 rounded">
               <h3 className="text-lg font-bold mb-2">Transcript</h3>
               <div className="whitespace-pre-wrap text-sm max-h-64 overflow-y-auto">{transcript}</div>
+            </div>
+
+            {showEmailInput && (
+              <div className="border-t border-zinc-800 pt-6 space-y-4">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="w-full px-4 py-3 bg-zinc-900 text-white border border-zinc-800 rounded focus:outline-none focus:border-white"
+                />
+                <button
+                  onClick={sendEmail}
+                  className="w-full px-8 py-6 bg-white text-black rounded-full text-base font-sans tracking-wider hover:bg-zinc-200 transition-colors"
+                >
+                  SEND TO EMAIL
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {capturedImage && (
+          <div className="space-y-6 text-white">
+            <div className="border border-zinc-800 p-4 rounded">
+              <img src={capturedImage} alt="Captured" className="w-full rounded mb-4" />
+            </div>
+
+            <div className="border border-zinc-800 p-4 rounded">
+              <h3 className="text-lg font-bold mb-2">AI Analysis</h3>
+              <div className="whitespace-pre-wrap text-sm">{imageAnalysis}</div>
             </div>
 
             {showEmailInput && (
