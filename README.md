@@ -1,4 +1,4 @@
-# SigmaSkibidi
+# Hyphen
 
 PWA designed to run only on phone
 
@@ -21,11 +21,3 @@ GPS tracking - in school (prevents getting lost/bunking)
 The entire system is built as a Next.js PWA using Vercel AI SDK, Tailwind CSS, browser APIs (camera, microphone, geolocation), OpenAI APIs for intelligence, and email delivery via Nodemailer gmail mail. 
 
 The interface is deliberately minimalist
-
-name IDEAS:
-- hyphen
-- sigmaskibidi
-- sweep
-- trek
-- dan
-- bob
