@@ -196,6 +196,212 @@ const Letter = () => {
                         </div>
                     </div>
                 </section>
+
+                {/* Pitch Content */}
+                <div className="border-t-2 border-gray-300 mt-16 pt-16">
+                    <section>
+                        <h2 className="text-3xl font-bold mb-8 text-black">The Pitch</h2>
+
+                        <h3 className="text-2xl font-semibold mb-6 text-black">what?</h3>
+                        <div className="space-y-4 mb-10">
+                            <p className="text-base text-gray-700 leading-relaxed">We built an ID card that's actually smart.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">it's an cool screen designed inside a 3D-printed case with a hook. wear it on your belt, hang it on an ID string, or dock it on your table like a phone in a phone stand.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">triple tap the screen to go from your ID display to the main dashboard.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">one button to record your entire class. one button to snap the whiteboard. AI handles the rest and emails you organized notes with homework deadlines, summaries, and study questions.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">your schedule updates in real-time. GPS keeps you from getting lost on campus. attendance tracks automatically. safety monitoring runs in the background detecting fights or incidents before they escalate.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">stop missing deadlines because you zoned out in class. stop getting lost on campus. stop having no idea what the homework was. start having every class recorded, transcribed, and summarized without lifting a finger.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">The AI processes everything and sends you the organized notes. You just wear the card and press buttons.</p>
+                        </div>
+
+                        <h3 className="text-2xl font-semibold mb-6 text-black">why?</h3>
+                        <div className="space-y-4 mb-10">
+                            <p className="text-base text-gray-700 leading-relaxed">Students miss half of what happens in class. You zone out, the teacher talks fast, you're still writing down the last thing they said while they've moved three slides ahead. By the time you get home, your notes are incomplete and you have no idea what the homework actually was.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">Everyone's scrambling after class asking "wait what did they say the deadline was?" or texting the group chat "did anyone get what's on the test?" You waste time trying to reconstruct what happened instead of actually learning.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">Campus is confusing. You're late because you went to the wrong building. You miss class announcements. Schedule changes and you find out after showing up to an empty room. Teachers get substituted and nobody told you.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">Parents want to know you're safe and actually going to class. Schools want to track attendance and safety. But current systems are clunky kiosks, paper sign-ins, or apps you have to remember to open.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">Nobody's making the ID card actually useful. It's just a piece of plastic that opens doors. We're making it do the work for you.</p>
+                        </div>
+
+                        <h3 className="text-2xl font-semibold mb-6 text-black">why now?</h3>
+                        <div className="space-y-4 mb-10">
+                            <p className="text-base text-gray-700 leading-relaxed">Every student has a phone. Every school requires ID cards. But they're separate things doing separate jobs, both annoying to carry.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">AI can now process audio and images in real-time. Old phones are everywhere, basically free. 3D printing makes custom hardware accessible. PWAs work offline and don't need app store approval.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">Schools are desperate for better attendance and safety systems. Students are drowning in missed information and disorganized notes. Parents want visibility without being helicopter parents.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">The problem is massive. And everyone already has the habit of wearing an ID card to school.</p>
+                        </div>
+
+                        <h3 className="text-2xl font-semibold mb-6 text-black">value proposition:</h3>
+                        <div className="space-y-6 mb-10">
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">Session Recording</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- press button when class starts, records audio</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- press again when class ends</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- AI emails you transcript with summary, homework, deadlines, and study questions</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- uses phone's mic, processes everything automatically</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">Photo Capture</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- snap whiteboards, textbooks, worksheets</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- AI extracts text from images</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- explains diagrams and formulas</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- adds to your daily summary</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">Daily Schedule</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- shows your schedule on the dashboard</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- updates with substitute teachers</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- notifies you of last minute changes</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- keeps you from missing class or going to wrong room</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">Attendance Tracking</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- GPS knows when you're in school</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- marks you present automatically</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- tracks if you leave during class hours</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- logs everything for parents and admin</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">GPS Tracking</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- prevents getting lost on campus</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- stops you from bunking classes</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- links with attendance to verify you're in right place</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- location data stays on your device unless you share it</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">Safety Monitoring</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- listens for shouting, distress, aggressive speech</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- uses MediaPipe/TensorFlow.js to detect rapid motion or aggressive poses</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- combines audio and video for multi-modal detection</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- sends instant alerts when something looks wrong</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">The Hardware</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- 3D-printed case, custom designed and printed in parts</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- old phone torn apart to fit inside</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- hook clips to belt, ID string, or sits on desk as phone stand</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- portable enough to wear all day</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-base mb-3"><strong className="text-black">Triple Tap Interface</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- tap three times to go from ID to dashboard</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- minimal interface, just buttons and text</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- nothing extra, just what you need</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="space-y-6 mb-10">
+                            <div>
+                                <p className="text-2xl mb-3"><strong className="text-black">customer relationships</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- partnering directly with schools and districts</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- building community of students</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- giving parents visibility and peace of mind</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-2xl mb-3"><strong className="text-black">revenue streams</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- school licenses: $20-30 per student per year</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- individual student subscriptions: $10/month</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- parent dashboard premium features</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- teacher app subscriptions</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 className="text-2xl font-semibold mb-6 text-black">future:</h3>
+                        <div className="space-y-6 mb-10">
+                            <div>
+                                <p className="text-2xl mb-3"><strong className="text-black">Management Dashboard</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- web dashboard for students and parents</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- view all transcripts and summaries</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- track attendance history</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- see homework deadlines in one place</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- review safety alerts and GPS logs</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-2xl mb-3"><strong className="text-black">Teacher App</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- post assignments directly to students</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- update schedules and notify students instantly</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- mark attendance from their side</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- send announcements to entire class</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- track which students are present or bunking</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-2xl mb-3"><strong className="text-black">Communication Device</strong></p>
+                                <div className="space-y-2 pl-4">
+                                    <p className="text-base text-gray-700 leading-relaxed">- receive alerts from teachers and admin</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- get notified of schedule changes instantly</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- emergency broadcasts reach all students</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- prevents missing important updates</p>
+                                    <p className="text-base text-gray-700 leading-relaxed">- students can't claim they didn't know</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 className="text-2xl font-semibold mb-6 text-black">market fit:</h3>
+<div className="space-y-4 mb-10">
+                            <p className="text-base text-gray-700 leading-relaxed">there are 250+ million students in India. every single one has to wear an ID card. every single one takes notes. every single one misses information in class.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">schools already require ID cards. we're just combining them into something that actually helps.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">parents want to know their kids are safe and actually attending class. schools have massive campuses where students get lost. class sizes are huge and teachers can't track everyone.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">we solve all these problems with one device they're already required to wear.</p>
+                        </div>
+
+                        <div className="space-y-3 mb-10">
+                            <p className="text-base"><strong className="text-black">Actually Useful ID Cards</strong></p>
+                            <p className="text-base"><strong className="text-black">Never Miss Class Info Again</strong></p>
+                            <p className="text-base"><strong className="text-black">Automatic Attendance</strong></p>
+                            <p className="text-base"><strong className="text-black">Safety Without Surveillance Feel</strong></p>
+                            <p className="text-base"><strong className="text-black">Notes That Organize Themselves</strong></p>
+                            <p className="text-base text-gray-700 leading-relaxed mt-4">we offer all of them.</p>
+                        </div>
+
+<div className="space-y-4 mb-10">
+                            <p className="text-base text-gray-700 leading-relaxed">everyone says "pay attention in class" like that's realistic for 6 hours a day.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">we say that's not how humans work.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">your brain zones out. teachers talk fast. you can't write and listen at the same time. you forget which building your next class is in. you miss the announcement about the schedule change. that's all normal.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">everyone says "just be more organized" or "try harder" or "check the board."</p>
+                            <p className="text-base text-gray-700 leading-relaxed">we say stop putting all the work on students.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">Hyphen records your lectures so you can actually listen. snaps the whiteboard so you don't miss diagrams. tracks your location so you don't get lost. updates your schedule automatically so you don't show up to empty rooms. monitors safety in the background so incidents get caught early.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">you just wear it. press buttons when you need to. everything else happens automatically.</p>
+                        </div>
+
+                        <div className="space-y-4 mb-10">
+                            <p className="text-base text-gray-700 leading-relaxed">ID cards shouldn't just open doors. they should help you learn, keep you safe, navigate campus, track attendance, and make school actually manageable.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">AI shouldn't be a tool you have to remember to use. it should be running in the background doing the boring work while you focus on understanding.</p>
+                            <p className="text-base text-gray-700 leading-relaxed">School is hard enough. Your ID card should make it easier.</p>
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     </div>
