@@ -176,13 +176,6 @@ export default function ClassPage() {
             >
               CAPTURE KNOWLEDGE
             </button>
-
-            <button
-              onClick={() => setShowPhotoNotes(true)}
-              className="w-full px-8 py-6 bg-white text-black rounded-full text-base font-sans tracking-wider hover:bg-zinc-200 transition-colors"
-            >
-              PHOTO NOTES
-            </button>
           </div>
         )}
 
