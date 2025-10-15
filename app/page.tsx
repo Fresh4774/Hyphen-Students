@@ -8,27 +8,45 @@ export default function HomePage() {
   const [tapCount, setTapCount] = useState(0);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [tagClicked, setTagClicked] = useState(false);
+  const [tapTimer, setTapTimer] = useState<NodeJS.Timeout | null>(null);
 
-  const handleTap = () => {
-    const now = Date.now();
-    const timeSinceLastTap = now - lastTapTime;
+const handleTap = () => {
+  const now = Date.now();
+  const timeSinceLastTap = now - lastTapTime;
 
-    // Reset tap count if more than 500ms has passed
-    if (timeSinceLastTap > 500) {
-      setTapCount(1);
-    } else {
-      const newTapCount = tapCount + 1;
-      setTapCount(newTapCount);
+  // Clear existing timer
+  if (tapTimer) {
+    clearTimeout(tapTimer);
+    setTapTimer(null);
+  }
+  
+  // Reset tap count if more than 500ms has passed
+  if (timeSinceLastTap > 500) {
+    setTapCount(1);
+  } else {
+    const newTapCount = tapCount + 1;
+    setTapCount(newTapCount);
 
-      // Navigate on third tap
-      if (newTapCount === 3) {
-        router.push('/class');
-        setTapCount(0);
-      }
+    // Navigate on third tap immediately
+    if (newTapCount === 3) {
+      router.push('/class');
+      setTapCount(0);
+      setLastTapTime(now);
+      return;
     }
 
-    setLastTapTime(now);
-  };
+    // Wait for potential third tap on second tap
+    if (newTapCount === 2) {
+      const timer = setTimeout(() => {
+        router.push('/safety');
+        setTapCount(0);
+      }, 300); // Wait 300ms for third tap
+      setTapTimer(timer);
+    }
+  }
+
+  setLastTapTime(now);
+};
 
   return (
     <div className="min-h-screen overflow-hidden bg-black flex items-center justify-center p-4 font-mono">
