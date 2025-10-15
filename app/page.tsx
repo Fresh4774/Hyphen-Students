@@ -3,6 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Define Geolocation Position type for clarity
+interface GeoCoordinates {
+  latitude: number;
+  longitude: number;
+}
+
 export default function HomePage() {
   const router = useRouter();
   const [tapCount, setTapCount] = useState(0);
@@ -11,36 +17,115 @@ export default function HomePage() {
   const [tapTimer, setTapTimer] = useState<NodeJS.Timeout | null>(null);
   const [showSchedule, setShowSchedule] = useState(false);
   
+  // School location - Crossroads International School, Udaipur
+  const SCHOOL_LAT = 24.6144217;
+  const SCHOOL_LNG = 73.697081;
+  const BOUNDARY_M = 200; // Geofence boundary for 'off-campus'
+  const ON_CAMPUS_M = 100; // Geofence boundary for 'on-campus'
+  
   // GPS Tracking State
-  const [locationStatus, setLocationStatus] = useState<'on-campus' | 'off-campus' | 'boundary'>('on-campus');
-  const [coordinates, setCoordinates] = useState({ lat: 26.9124, lng: 75.7873 }); // Jaipur coordinates
+  const [locationStatus, setLocationStatus] = useState<'on-campus' | 'off-campus' | 'boundary' | 'error' | 'loading'>('loading');
+  const [coordinates, setCoordinates] = useState({ lat: SCHOOL_LAT, lng: SCHOOL_LNG });
+  const [distance, setDistance] = useState(0);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [geoError, setGeoError] = useState<string | null>(null); // State to hold GPS errors
 
-  // Simulate GPS movement
+  /**
+   * Calculate distance between two coordinates in meters (Haversine formula).
+   * @param lat1 Latitude of point 1
+   * @param lng1 Longitude of point 1
+   * @param lat2 Latitude of point 2
+   * @param lng2 Longitude of point 2
+   * @returns Distance in meters
+   */
+  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lng2 - lng1) * Math.PI / 180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+              Math.cos(φ1) * Math.cos(φ2) *
+              Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c; // Distance in meters
+  };
+
+  /**
+   * Geolocation success callback. Updates location state and geofence status.
+   */
+  const geoSuccess = (position: GeolocationPosition) => {
+    const { latitude: newLat, longitude: newLng } = position.coords;
+    
+    setCoordinates({ lat: newLat, lng: newLng });
+    setLastUpdate(new Date());
+    setGeoError(null); // Clear any previous errors
+
+    // Calculate distance from school
+    const dist = calculateDistance(SCHOOL_LAT, SCHOOL_LNG, newLat, newLng);
+    setDistance(dist);
+
+    // Determine status based on distance (Geofencing Logic)
+    if (dist <= ON_CAMPUS_M) {
+      setLocationStatus('on-campus'); // Within 100m
+    } else if (dist <= BOUNDARY_M) {
+      setLocationStatus('boundary'); // 100m - 200m
+    } else {
+      setLocationStatus('off-campus'); // Beyond 200m
+    }
+  };
+
+  /**
+   * Geolocation error callback. Updates status to 'error'.
+   */
+  const geoErrorCallback = (error: GeolocationPositionError) => {
+    console.error('Geolocation Error:', error);
+    setLocationStatus('error');
+    let errorMessage = 'GPS unavailable.';
+    switch(error.code) {
+      case error.PERMISSION_DENIED:
+        errorMessage = 'Location access denied by the user. Cannot track GPS.';
+        break;
+      case error.POSITION_UNAVAILABLE:
+        errorMessage = 'Location information is unavailable.';
+        break;
+      case error.TIMEOUT:
+        errorMessage = 'The request to get user location timed out.';
+        break;
+    }
+    setGeoError(errorMessage);
+    // Set coordinates to school center on error as a fallback/default
+    setCoordinates({ lat: SCHOOL_LAT, lng: SCHOOL_LNG });
+    setDistance(0);
+  };
+  
+  // EFFECT HOOK FOR REAL GPS TRACKING
   useEffect(() => {
-    const interval = setInterval(() => {
-      setLastUpdate(new Date());
-      
-      // Simulate random movement (small changes to coordinates)
-      setCoordinates(prev => ({
-        lat: prev.lat + (Math.random() - 0.5) * 0.001,
-        lng: prev.lng + (Math.random() - 0.5) * 0.001
-      }));
+    if (!navigator.geolocation) {
+      console.error("Geolocation is not supported by this browser.");
+      setLocationStatus('error');
+      setGeoError("Geolocation is not supported by your device's browser.");
+      return;
+    }
 
-      // Randomly change status (for demo purposes)
-      const random = Math.random();
-      if (random > 0.95) {
-        setLocationStatus('off-campus');
-      } else if (random > 0.90) {
-        setLocationStatus('boundary');
-      } else {
-        setLocationStatus('on-campus');
+    // Start watching the user's position
+    const watchId = navigator.geolocation.watchPosition(
+      geoSuccess,
+      geoErrorCallback,
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
       }
-    }, 5000); // Update every 5 seconds
+    );
 
-    return () => clearInterval(interval);
-  }, []);
+    // Cleanup function: stop watching position when the component unmounts
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []); // Empty dependency array ensures this runs once on mount
 
+  // Tap handler (Remains the same)
   const handleTap = () => {
     const now = Date.now();
     const timeSinceLastTap = now - lastTapTime;
@@ -90,6 +175,8 @@ export default function HomePage() {
       case 'on-campus': return 'text-green-400';
       case 'boundary': return 'text-yellow-400';
       case 'off-campus': return 'text-red-400';
+      case 'error': return 'text-red-400';
+      case 'loading': return 'text-sky-400';
     }
   };
 
@@ -98,6 +185,8 @@ export default function HomePage() {
       case 'on-campus': return 'bg-green-900/30';
       case 'boundary': return 'bg-yellow-900/30';
       case 'off-campus': return 'bg-red-900/30';
+      case 'error': return 'bg-red-900/30';
+      case 'loading': return 'bg-sky-900/30';
     }
   };
 
@@ -106,6 +195,8 @@ export default function HomePage() {
       case 'on-campus': return 'ON CAMPUS';
       case 'boundary': return 'NEAR BOUNDARY';
       case 'off-campus': return 'OFF CAMPUS - ALERT';
+      case 'error': return 'GPS ERROR';
+      case 'loading': return 'LOCATING GPS...';
     }
   };
 
@@ -172,7 +263,7 @@ export default function HomePage() {
 
             <div className="border-b border-zinc-800 pb-2">
               <div className="text-xs text-zinc-500 mb-1">DATE OF BIRTH</div>
-              <div className="text-sm tracking-wide">1 JANUATY 2008</div>
+              <div className="text-sm tracking-wide">1 JANUARY 2008</div>
             </div>
 
             <div className="border-b border-zinc-800 pb-2">
@@ -205,15 +296,20 @@ export default function HomePage() {
                   GPS TRACKING SYSTEM
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${locationStatus === 'off-campus' ? 'bg-red-500 animate-pulse' : 'bg-green-500'}`}></div>
-                  <span className="text-xs text-zinc-500">ACTIVE</span>
+                  <div className={`w-2 h-2 rounded-full ${locationStatus === 'off-campus' || locationStatus === 'error' ? 'bg-red-500 animate-pulse' : locationStatus === 'loading' ? 'bg-sky-500 animate-pulse' : 'bg-green-500'}`}></div>
+                  <span className="text-xs text-zinc-500">{locationStatus === 'error' ? 'ERROR' : locationStatus === 'loading' ? 'WAITING' : 'ACTIVE'}</span>
                 </div>
               </div>
 
               {/* Status Badge */}
               <div className={`${getStatusBg()} border border-zinc-700 rounded-lg p-3`}>
-                <div className={`text-xs font-bold tracking-widest ${getStatusColor()}`}>
-                  {getStatusText()}
+                <div className="flex justify-between items-center">
+                  <div className={`text-xs font-bold tracking-widest ${getStatusColor()}`}>
+                    {getStatusText()}
+                  </div>
+                  <div className="text-xs text-zinc-500">
+                    {locationStatus !== 'loading' && locationStatus !== 'error' ? `${distance.toFixed(0)}m from campus` : 'N/A'}
+                  </div>
                 </div>
               </div>
 
@@ -229,13 +325,24 @@ export default function HomePage() {
                 </div>
               </div>
 
+              {/* School Location Reference */}
+              <div className="bg-zinc-900 border border-zinc-800 rounded p-2">
+                <div className="text-[10px] text-zinc-500 mb-1">CAMPUS CENTER</div>
+                <div className="text-[10px] text-zinc-600 font-mono">
+                  {SCHOOL_LAT.toFixed(6)}, {SCHOOL_LNG.toFixed(6)}
+                </div>
+                <div className="text-[9px] text-zinc-700 mt-1">
+                  Crossroads International School, Udaipur
+                </div>
+              </div>
+
               {/* Last Update */}
               <div className="flex items-center justify-between text-[10px] text-zinc-600">
                 <span>LAST UPDATE</span>
-                <span className="font-mono">{lastUpdate.toLocaleTimeString()}</span>
+                <span className="font-mono">{locationStatus === 'loading' ? 'N/A' : lastUpdate.toLocaleTimeString()}</span>
               </div>
 
-              {/* Warning Banner */}
+              {/* Warning/Error Banners */}
               {locationStatus === 'off-campus' && (
                 <div className="bg-red-900/20 border border-red-800 rounded-lg p-3 animate-pulse">
                   <div className="text-xs text-red-400 font-bold tracking-wide">
@@ -253,7 +360,18 @@ export default function HomePage() {
                     ⚠ APPROACHING BOUNDARY
                   </div>
                   <div className="text-[10px] text-yellow-500 mt-1">
-                    Student near school perimeter
+                    Student near school perimeter (100m - 200m)
+                  </div>
+                </div>
+              )}
+
+              {locationStatus === 'error' && (
+                <div className="bg-red-900/20 border border-red-800 rounded-lg p-3">
+                  <div className="text-xs text-red-400 font-bold tracking-wide">
+                    🔴 GEOLOCATION ERROR
+                  </div>
+                  <div className="text-[10px] text-red-500 mt-1">
+                    {geoError || 'Cannot get current location. Check device settings and permissions.'}
                   </div>
                 </div>
               )}
@@ -262,7 +380,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Schedule Popup Modal */}
+      {/* Schedule Popup Modal (Remains the same) */}
       {showSchedule && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
