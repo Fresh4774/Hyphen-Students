@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
@@ -10,25 +10,52 @@ export default function HomePage() {
   const [tagClicked, setTagClicked] = useState(false);
   const [tapTimer, setTapTimer] = useState<NodeJS.Timeout | null>(null);
   const [showSchedule, setShowSchedule] = useState(false);
+  
+  // GPS Tracking State
+  const [locationStatus, setLocationStatus] = useState<'on-campus' | 'off-campus' | 'boundary'>('on-campus');
+  const [coordinates, setCoordinates] = useState({ lat: 26.9124, lng: 75.7873 }); // Jaipur coordinates
+  const [lastUpdate, setLastUpdate] = useState(new Date());
+
+  // Simulate GPS movement
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLastUpdate(new Date());
+      
+      // Simulate random movement (small changes to coordinates)
+      setCoordinates(prev => ({
+        lat: prev.lat + (Math.random() - 0.5) * 0.001,
+        lng: prev.lng + (Math.random() - 0.5) * 0.001
+      }));
+
+      // Randomly change status (for demo purposes)
+      const random = Math.random();
+      if (random > 0.95) {
+        setLocationStatus('off-campus');
+      } else if (random > 0.90) {
+        setLocationStatus('boundary');
+      } else {
+        setLocationStatus('on-campus');
+      }
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleTap = () => {
     const now = Date.now();
     const timeSinceLastTap = now - lastTapTime;
 
-    // Clear existing timer
     if (tapTimer) {
       clearTimeout(tapTimer);
       setTapTimer(null);
     }
     
-    // Reset tap count if more than 500ms has passed
     if (timeSinceLastTap > 500) {
       setTapCount(1);
     } else {
       const newTapCount = tapCount + 1;
       setTapCount(newTapCount);
 
-      // Navigate on third tap immediately
       if (newTapCount === 3) {
         router.push('/class');
         setTapCount(0);
@@ -36,12 +63,11 @@ export default function HomePage() {
         return;
       }
 
-      // Wait for potential third tap on second tap
       if (newTapCount === 2) {
         const timer = setTimeout(() => {
           router.push('/safety');
           setTapCount(0);
-        }, 300); // Wait 300ms for third tap
+        }, 300);
         setTapTimer(timer);
       }
     }
@@ -58,6 +84,30 @@ export default function HomePage() {
     { time: '11:35 - 12:20', subject: 'Computer Science', teacher: 'Mr. Gupta' },
     { time: '12:25 - 01:10', subject: 'Physical Education', teacher: 'Coach Reddy' },
   ];
+
+  const getStatusColor = () => {
+    switch (locationStatus) {
+      case 'on-campus': return 'text-green-400';
+      case 'boundary': return 'text-yellow-400';
+      case 'off-campus': return 'text-red-400';
+    }
+  };
+
+  const getStatusBg = () => {
+    switch (locationStatus) {
+      case 'on-campus': return 'bg-green-900/30';
+      case 'boundary': return 'bg-yellow-900/30';
+      case 'off-campus': return 'bg-red-900/30';
+    }
+  };
+
+  const getStatusText = () => {
+    switch (locationStatus) {
+      case 'on-campus': return 'ON CAMPUS';
+      case 'boundary': return 'NEAR BOUNDARY';
+      case 'off-campus': return 'OFF CAMPUS - ALERT';
+    }
+  };
 
   return (
     <div className="min-h-screen overflow-hidden bg-black flex items-center justify-center p-4 font-mono">
@@ -143,6 +193,70 @@ export default function HomePage() {
             <div className="border-b border-zinc-800 pb-2">
               <div className="text-xs text-zinc-500 mb-1">EMAIL</div>
               <div className="text-sm tracking-wide">rohitSharma@gmail.com</div>
+            </div>
+          </div>
+
+          {/* GPS TRACKING SYSTEM */}
+          <div className="mt-6 pt-4 border-t-2 border-zinc-700">
+            <div className="space-y-3">
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-zinc-400 tracking-wider font-semibold">
+                  GPS TRACKING SYSTEM
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${locationStatus === 'off-campus' ? 'bg-red-500 animate-pulse' : 'bg-green-500'}`}></div>
+                  <span className="text-xs text-zinc-500">ACTIVE</span>
+                </div>
+              </div>
+
+              {/* Status Badge */}
+              <div className={`${getStatusBg()} border border-zinc-700 rounded-lg p-3`}>
+                <div className={`text-xs font-bold tracking-widest ${getStatusColor()}`}>
+                  {getStatusText()}
+                </div>
+              </div>
+
+              {/* Coordinates */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-zinc-900 border border-zinc-800 rounded p-2">
+                  <div className="text-[10px] text-zinc-500 mb-1">LATITUDE</div>
+                  <div className="text-xs text-white font-mono">{coordinates.lat.toFixed(6)}</div>
+                </div>
+                <div className="bg-zinc-900 border border-zinc-800 rounded p-2">
+                  <div className="text-[10px] text-zinc-500 mb-1">LONGITUDE</div>
+                  <div className="text-xs text-white font-mono">{coordinates.lng.toFixed(6)}</div>
+                </div>
+              </div>
+
+              {/* Last Update */}
+              <div className="flex items-center justify-between text-[10px] text-zinc-600">
+                <span>LAST UPDATE</span>
+                <span className="font-mono">{lastUpdate.toLocaleTimeString()}</span>
+              </div>
+
+              {/* Warning Banner */}
+              {locationStatus === 'off-campus' && (
+                <div className="bg-red-900/20 border border-red-800 rounded-lg p-3 animate-pulse">
+                  <div className="text-xs text-red-400 font-bold tracking-wide">
+                    ⚠ STUDENT LEFT SCHOOL PREMISES
+                  </div>
+                  <div className="text-[10px] text-red-500 mt-1">
+                    Alert sent to administration & guardians
+                  </div>
+                </div>
+              )}
+
+              {locationStatus === 'boundary' && (
+                <div className="bg-yellow-900/20 border border-yellow-800 rounded-lg p-3">
+                  <div className="text-xs text-yellow-400 font-bold tracking-wide">
+                    ⚠ APPROACHING BOUNDARY
+                  </div>
+                  <div className="text-[10px] text-yellow-500 mt-1">
+                    Student near school perimeter
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
