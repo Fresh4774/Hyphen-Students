@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SafetyPage() {
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -289,6 +291,17 @@ export default function SafetyPage() {
       )}
       
       <div className="max-w-md mx-auto space-y-4">
+        <button
+          onClick={() => router.push('/')}
+          className={`text-sm font-bold tracking-wider transition-colors px-4 py-2 ${
+            isAlertActive 
+              ? 'bg-white text-red-600 hover:bg-red-50' 
+              : 'bg-zinc-800 text-white hover:bg-zinc-700 border border-zinc-700'
+          }`}
+        >
+          ← BACK TO HOME
+        </button>
+
         <div className="border-b border-zinc-700 pb-3">
           <h1 className={`text-xl tracking-widest ${isAlertActive ? 'text-white' : 'text-white'}`}>
             SAFETY MONITORING

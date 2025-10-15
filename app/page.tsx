@@ -9,44 +9,55 @@ export default function HomePage() {
   const [lastTapTime, setLastTapTime] = useState(0);
   const [tagClicked, setTagClicked] = useState(false);
   const [tapTimer, setTapTimer] = useState<NodeJS.Timeout | null>(null);
+  const [showSchedule, setShowSchedule] = useState(false);
 
-const handleTap = () => {
-  const now = Date.now();
-  const timeSinceLastTap = now - lastTapTime;
+  const handleTap = () => {
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTapTime;
 
-  // Clear existing timer
-  if (tapTimer) {
-    clearTimeout(tapTimer);
-    setTapTimer(null);
-  }
-  
-  // Reset tap count if more than 500ms has passed
-  if (timeSinceLastTap > 500) {
-    setTapCount(1);
-  } else {
-    const newTapCount = tapCount + 1;
-    setTapCount(newTapCount);
-
-    // Navigate on third tap immediately
-    if (newTapCount === 3) {
-      router.push('/class');
-      setTapCount(0);
-      setLastTapTime(now);
-      return;
+    // Clear existing timer
+    if (tapTimer) {
+      clearTimeout(tapTimer);
+      setTapTimer(null);
     }
+    
+    // Reset tap count if more than 500ms has passed
+    if (timeSinceLastTap > 500) {
+      setTapCount(1);
+    } else {
+      const newTapCount = tapCount + 1;
+      setTapCount(newTapCount);
 
-    // Wait for potential third tap on second tap
-    if (newTapCount === 2) {
-      const timer = setTimeout(() => {
-        router.push('/safety');
+      // Navigate on third tap immediately
+      if (newTapCount === 3) {
+        router.push('/class');
         setTapCount(0);
-      }, 300); // Wait 300ms for third tap
-      setTapTimer(timer);
-    }
-  }
+        setLastTapTime(now);
+        return;
+      }
 
-  setLastTapTime(now);
-};
+      // Wait for potential third tap on second tap
+      if (newTapCount === 2) {
+        const timer = setTimeout(() => {
+          router.push('/safety');
+          setTapCount(0);
+        }, 300); // Wait 300ms for third tap
+        setTapTimer(timer);
+      }
+    }
+
+    setLastTapTime(now);
+  };
+
+  const schedule = [
+    { time: '08:00 - 08:45', subject: 'Mathematics', teacher: 'Mr. Singh' },
+    { time: '08:50 - 09:35', subject: 'Physics', teacher: 'Ms. Patel' },
+    { time: '09:40 - 10:25', subject: 'Chemistry', teacher: 'Dr. Kumar' },
+    { time: '10:25 - 10:45', subject: 'BREAK', teacher: '' },
+    { time: '10:45 - 11:30', subject: 'English', teacher: 'Mrs. Verma' },
+    { time: '11:35 - 12:20', subject: 'Computer Science', teacher: 'Mr. Gupta' },
+    { time: '12:25 - 01:10', subject: 'Physical Education', teacher: 'Coach Reddy' },
+  ];
 
   return (
     <div className="min-h-screen overflow-hidden bg-black flex items-center justify-center p-4 font-mono">
@@ -61,6 +72,18 @@ const handleTap = () => {
           }}
         >
           {tagClicked ? 'WELCOME BACK TO SCHOOL LOL' : 'ATTENDANCE'}
+        </div>
+
+        {/* Schedule Tag */}
+        <div 
+          className="absolute -top-2 -left-2 bg-zinc-800 text-white px-4 py-1.5 text-xs tracking-wider cursor-pointer hover:bg-zinc-700 transition-colors z-10 shadow-lg"
+          style={{ transform: 'rotate(-3deg)' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowSchedule(true);
+          }}
+        >
+          TODAY'S SCHEDULE
         </div>
 
         <div 
@@ -124,6 +147,56 @@ const handleTap = () => {
           </div>
         </div>
       </div>
+
+      {/* Schedule Popup Modal */}
+      {showSchedule && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50"
+          onClick={() => setShowSchedule(false)}
+        >
+          <div 
+            className="bg-zinc-900 rounded-lg p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-sans text-white tracking-wider">TODAY'S SCHEDULE</h2>
+              <button 
+                onClick={() => setShowSchedule(false)}
+                className="text-zinc-400 hover:text-white text-2xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {schedule.map((item, index) => (
+                <div 
+                  key={index}
+                  className={`border-l-4 ${
+                    item.subject === 'BREAK' 
+                      ? 'border-zinc-600 bg-zinc-800' 
+                      : 'border-zinc-700 bg-zinc-800'
+                  } p-4 rounded-r`}
+                >
+                  <div className="flex justify-between items-start mb-1">
+                    <div className="text-sm text-white font-medium tracking-wide">
+                      {item.subject}
+                    </div>
+                    <div className="text-xs text-zinc-400">{item.time}</div>
+                  </div>
+                  {item.teacher && (
+                    <div className="text-xs text-zinc-500 mt-1">{item.teacher}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-zinc-700 text-center text-xs text-zinc-500">
+              Wednesday, October 15, 2025
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
